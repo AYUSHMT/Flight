@@ -8,17 +8,17 @@ class FlightDataProcessor:
         return cls.__instance
 
     def __init__(self, flights_dct):
-        try:
-            if isinstance(flights_dct,dict):
-                self.flights_dct = flights_dct
-            elif isinstance(flights_dct,list):
-                self.flights_dct = {}
+        self.flights_dct = {}
+        if isinstance(flights_dct, dict):
+            self.flights_dct = flights_dct
+        elif isinstance(flights_dct, list):
+            try:
                 for flight in flights_dct:
-                    self.flights_dct[flight['flight_number']] = flight 
-            else:
-                print("Invalid Flight details.. Send list of flights json or dict containing contains flight id as key and whole flight data as its value")
-        except:
-            print("Invalid Flight Json")
+                    self.flights_dct[flight['flight_number']] = flight
+            except (KeyError, TypeError):
+                raise ValueError("Invalid flight data structure in list.")
+        else:
+            raise TypeError("Expected input type: dict or list of flight dictionaries.")
                 
 
     def add_flight(self,data):
